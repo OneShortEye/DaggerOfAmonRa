@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CD vs Floppy Comparison</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+    body {
+      background-color: #e9ecf8;
+    }
+    .compare {
+      --mask-width: 50%;
+      --handle-size: 32px;
+      position: relative;
+      border: 1px solid rgb(0 0 0 / 0.05);
+      margin-bottom: 2rem;
+    }
+    .compare__separator {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      left: var(--mask-width);
+      width: 2px;
+      margin-left: -1px;
+      background: black;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .compare__image-one {
+      width: 100%;
+      display: block;
+    }
+    .compare__mask {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      z-index: 1;
+      background: white;
+      overflow: hidden;
+      width: var(--mask-width);
+    }
+    .compare__image-two {
+      height: 100%;
+      width: auto;
+    }
+    .compare__input {
+      appearance: none;
+      -webkit-appearance: none;
+      -webkit-tap-highlight-color: transparent;
+      position: absolute;
+      top: 0;
+      left: calc(var(--handle-size) / -2);
+      width: calc(100% + var(--handle-size));
+      height: 100%;
+      opacity: 0;
+      z-index: 2;
+      cursor: col-resize;
+      background-color: transparent;
+    }
+    .compare__input::-moz-range-track { height: 100%; }
+    .compare__input::-moz-range-thumb {
+      height: 100%;
+      border-radius: 0;
+      width: var(--handle-size);
+      border: none;
+    }
+    .compare__input::-webkit-slider-runnable-track { height: 100%; }
+    .compare__input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 100%;
+      border-radius: 0;
+      width: var(--handle-size);
+      border: none;
+    }
+    .compare__icon {
+      position: absolute;
+      z-index: 2;
+      color: #333;
+      width: var(--handle-size);
+      height: var(--handle-size);
+      top: 50%;
+      left: var(--mask-width);
+      transform: translate(-50%, -50%);
+      padding: 6px;
+      border: 2px solid currentColor;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 1);
+    }
+    .compare__icon path {
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 2px;
+    }
+
+    #compare_intro{
+      width: 100%;
+    }
+
+    @media screen and (min-width: 1200px){
+      #compare_intro{
+        width: 50%;
+        margin: 0px auto;
+      }
+    }
+
+  </style>
+</head>
+<body class="container py-4">
+  <h1>Dagger Of Amon Ra</h1>
+  <h2 class="mb-4">CD vs Floppy Comparison</h1>
+  <p class="fs-5">The Dagger of Amon Ra released in 1992 on floppy disks. A CD release followed a year later. When the game went to CD, Sierra had to consider people playing the game in Windows 3.1. That operating system has certain colors reserved for its GUI that applications couldn't use. So the art in the CD version is quite different. Sometimes those differences are really obvious...</p>
+  <div class="compare mb-3" id="compare_intro" style="--mask-width: 50%;">
+    <img class="compare__image-one" src="cd/lb2compare_cd_act1_newsdeskcu.png">
+    <div class="compare__mask">
+      <img class="compare__image-two" src="floppy/lb2compare_floppy_act1_newsdeskcu.png">
+    </div>
+    <div class="compare__separator">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" class="compare__icon" viewBox="0 0 16 16">
+        <path d="M 6 2 L 1 8 L 6 14 M 10 2 L 15 8 L 10 14" stroke="currentColor"></path>
+      </svg>
+    </div>
+    <input class="compare__input" type="range" min="0" step="0.5" max="100" value="50">
+  </div>
+  <p class="fst-italic fs-5 text-center">Hey, where'd my brushstrokes go?</p>
+
+  <p class="fs-5">But most of the time, the changes are more subtle. I've made this gallery to more easily view the differences. The floppy version is on the left, and the CD version is on the right. Credit to ATMachine for screenshots.</p>
+
+  <div id="gallery"></div>
+
+  <script>
+    const files = [
+"lb2compare_cd_act1_lofatexterior.png",
+"lb2compare_cd_act1_lofatexterior1.png",
+"lb2compare_cd_act1_lofatinterior.png",
+"lb2compare_cd_act1_museumext.png",
+"lb2compare_cd_act1_museumextdoor.png",
+"lb2compare_cd_act1_newsdeskcu.png",
+"lb2compare_cd_act1_newsdeskcu1.png",
+"lb2compare_cd_act1_newsdeskcu2.png",
+"lb2compare_cd_act1_newsdeskcu3.png",
+"lb2compare_cd_act1_notebook.png",
+"lb2compare_cd_act1_orileyoffice.png",
+"lb2compare_cd_act1_speakeasybathroom.png",
+"lb2compare_cd_act1_speakeasyext.png",
+"lb2compare_cd_act1_startscreen.png",
+"lb2compare_cd_act1_startscreen1.png",
+"lb2compare_cd_act1_ziggycu.png",
+"lb2compare_cd_act2_ankhcu.png",
+"lb2compare_cd_act2_armorannex.png",
+"lb2compare_cd_act2_armorroom.png",
+"lb2compare_cd_act2_armorroom1.png",
+"lb2compare_cd_act2_boneroom.png",
+"lb2compare_cd_act2_eavesdrop.png",
+"lb2compare_cd_act2_eavesdrop1.png",
+"lb2compare_cd_act2_eavesdrop1a.png",
+"lb2compare_cd_act2_eavesdrop2.png",
+"lb2compare_cd_act2_eavesdrop3.png",
+"lb2compare_cd_act2_egyptleftroom.png",
+"lb2compare_cd_act2_egyptrightroom.png",
+"lb2compare_cd_act2_foyercenter.png",
+"lb2compare_cd_act2_giftshop.png",
+"lb2compare_cd_act2_laurafindspippincu.png",
+"lb2compare_cd_act2_lifemaskroom.png",
+"lb2compare_cd_act2_pippincorpsecu.png",
+"lb2compare_cd_act2_pteroroom.png",
+"lb2compare_cd_act2_rexroom.png",
+"lb2compare_cd_act2_stevelauracu.png",
+"lb2compare_cd_act3_basementfoyer.png",
+"lb2compare_cd_act3_basementfoyer1.png",
+"lb2compare_cd_act3_bustroom.png",
+"lb2compare_cd_act3_carringtonoffice.png",
+"lb2compare_cd_act3_carringtonoffice1.png",
+"lb2compare_cd_act3_daggercu.png",
+"lb2compare_cd_act3_erniecorpsecu.png",
+"lb2compare_cd_act3_ernieoffice.png",
+"lb2compare_cd_act3_ernieoffice1.png",
+"lb2compare_cd_act3_ernieofficeopendoor.png",
+"lb2compare_cd_act3_lanterncu.png",
+"lb2compare_cd_act3_lanterncu1.png",
+"lb2compare_cd_act3_laurafindserniecu.png",
+"lb2compare_cd_act3_mykloslab.png",
+"lb2compare_cd_act3_mykloslab1.png",
+"lb2compare_cd_act3_myklosoffice.png",
+"lb2compare_cd_act3_myklosofficepassage.png",
+"lb2compare_cd_act3_paintingcu.png",
+"lb2compare_cd_act3_paintingroom.png",
+"lb2compare_cd_act3_staircase.png",
+"lb2compare_cd_act3_vatcu.png",
+"lb2compare_cd_act3_vatroom.png",
+"lb2compare_cd_act3_watneycorpsecu.png",
+"lb2compare_cd_act3_wolfoffice.png",
+"lb2compare_cd_act3_wolfoffice1.png",
+"lb2compare_cd_act3_wolfofficepassage.png",
+"lb2compare_cd_act4_countesscorpsecu.png",
+"lb2compare_cd_act5_boilerroom.png",
+"lb2compare_cd_act5_boilerroom1.png",
+"lb2compare_cd_act5_boilerroompassage.png",
+"lb2compare_cd_act5_cultleftroom.png",
+"lb2compare_cd_act5_cultrightroom.png",
+"lb2compare_cd_act5_cultrightroom1.png",
+"lb2compare_cd_act5_elevator.png",
+"lb2compare_cd_act5_lauracultistscu.png",
+"lb2compare_cd_act5_rexmouthcu.png",
+"lb2compare_cd_act5_sarcophagusroom.png",
+"lb2compare_cd_act5_sarcophagusroom1.png",
+"lb2compare_cd_act5_sarcophagusroom2.png",
+"lb2compare_cd_act5_storageroom.png",
+"lb2compare_cd_ending_badend.png",
+"lb2compare_cd_ending_coroner.png",
+"lb2compare_cd_ending_coroner1.png",
+"lb2compare_cd_ending_prison.png",
+"lb2compare_cd_ending_prison1.png",
+"lb2compare_cd_ending_stevecu.png",
+"lb2compare_cd_gui_inventory_act4end.png",
+"lb2compare_cd_gui_pointercursor.png",
+"lb2compare_cd_gui_quit.png",
+"lb2compare_cd_intro_boatdock.png",
+"lb2compare_cd_intro_boatdock_zoom.png",
+"lb2compare_cd_intro_menu.png",
+"lb2compare_cd_intro_menustart.png",
+"lb2compare_cd_intro_sierralogo.png",
+"lb2compare_cd_intro_tinylaura.png",
+"lb2compare_cd_intro_trainarrive.png",
+"lb2compare_cd_intro_trainarrive1.png",
+"lb2compare_cd_intro_traininterior.png",
+"lb2compare_cd_intro_traininterior1.png",
+"lb2compare_cd_intro_tribuneext.png",
+"lb2compare_cd_intro_tutpippin.png",
+"lb2compare_cd_intro_watneysteve.png",
+"lb2compare_floppy_act1_lofatexterior.png",
+"lb2compare_floppy_act1_lofatexterior1.png",
+"lb2compare_floppy_act1_lofatinterior.png",
+"lb2compare_floppy_act1_museumext.png",
+"lb2compare_floppy_act1_museumextdoor.png",
+"lb2compare_floppy_act1_newsdeskcu.png",
+"lb2compare_floppy_act1_newsdeskcu1.png",
+"lb2compare_floppy_act1_newsdeskcu2.png",
+"lb2compare_floppy_act1_newsdeskcu3.png",
+"lb2compare_floppy_act1_notebook.png",
+"lb2compare_floppy_act1_orileyoffice.png",
+"lb2compare_floppy_act1_orileyoffice1.png",
+"lb2compare_floppy_act1_speakeasybathroom.png",
+"lb2compare_floppy_act1_speakeasyext.png",
+"lb2compare_floppy_act1_startscreen.png",
+"lb2compare_floppy_act1_startscreen1.png",
+"lb2compare_floppy_act1_ziggycu.png",
+"lb2compare_floppy_act2_ankhcu.png",
+"lb2compare_floppy_act2_armorannex.png",
+"lb2compare_floppy_act2_armorroom.png",
+"lb2compare_floppy_act2_armorroom1.png",
+"lb2compare_floppy_act2_boneroom.png",
+"lb2compare_floppy_act2_eavesdrop.png",
+"lb2compare_floppy_act2_eavesdrop1.png",
+"lb2compare_floppy_act2_eavesdrop1a.png",
+"lb2compare_floppy_act2_eavesdrop2.png",
+"lb2compare_floppy_act2_eavesdrop3.png",
+"lb2compare_floppy_act2_egyptleftroom.png",
+"lb2compare_floppy_act2_egyptrightroom.png",
+"lb2compare_floppy_act2_foyercenter.png",
+"lb2compare_floppy_act2_giftshop.png",
+"lb2compare_floppy_act2_laurafindspippincu.png",
+"lb2compare_floppy_act2_lifemaskroom.png",
+"lb2compare_floppy_act2_pippincorpsecu.png",
+"lb2compare_floppy_act2_pteroroom.png",
+"lb2compare_floppy_act2_rexroom.png",
+"lb2compare_floppy_act2_stevelauracu.png",
+"lb2compare_floppy_act2_stevelauracu1.png",
+"lb2compare_floppy_act3_basementfoyer.png",
+"lb2compare_floppy_act3_basementfoyer1.png",
+"lb2compare_floppy_act3_bustroom.png",
+"lb2compare_floppy_act3_carringtonoffice.png",
+"lb2compare_floppy_act3_carringtonoffice1.png",
+"lb2compare_floppy_act3_daggercu.png",
+"lb2compare_floppy_act3_erniecorpsecu.png",
+"lb2compare_floppy_act3_ernieoffice.png",
+"lb2compare_floppy_act3_ernieoffice1.png",
+"lb2compare_floppy_act3_ernieofficeopendoor.png",
+"lb2compare_floppy_act3_lanterncu.png",
+"lb2compare_floppy_act3_lanterncu1.png",
+"lb2compare_floppy_act3_laurafindserniecu.png",
+"lb2compare_floppy_act3_mykloslab.png",
+"lb2compare_floppy_act3_mykloslab1.png",
+"lb2compare_floppy_act3_myklosoffice.png",
+"lb2compare_floppy_act3_myklosofficepassage.png",
+"lb2compare_floppy_act3_paintingcu.png",
+"lb2compare_floppy_act3_paintingroom.png",
+"lb2compare_floppy_act3_staircase.png",
+"lb2compare_floppy_act3_vatcu.png",
+"lb2compare_floppy_act3_vatroom.png",
+"lb2compare_floppy_act3_watneycorpsecu.png",
+"lb2compare_floppy_act3_wolfoffice.png",
+"lb2compare_floppy_act3_wolfoffice1.png",
+"lb2compare_floppy_act3_wolfofficepassage.png",
+"lb2compare_floppy_act4_countesscorpsecu.png",
+"lb2compare_floppy_act5_boilerroom.png",
+"lb2compare_floppy_act5_boilerroom1.png",
+"lb2compare_floppy_act5_boilerroompassage.png",
+"lb2compare_floppy_act5_cultleftroom.png",
+"lb2compare_floppy_act5_cultrightroom.png",
+"lb2compare_floppy_act5_cultrightroom1.png",
+"lb2compare_floppy_act5_elevator.png",
+"lb2compare_floppy_act5_lauracultistscu.png",
+"lb2compare_floppy_act5_rexmouthcu.png",
+"lb2compare_floppy_act5_sarcophagusroom.png",
+"lb2compare_floppy_act5_sarcophagusroom1.png",
+"lb2compare_floppy_act5_sarcophagusroom2.png",
+"lb2compare_floppy_act5_storageroom.png",
+"lb2compare_floppy_ending_badend.png",
+"lb2compare_floppy_ending_coroner.png",
+"lb2compare_floppy_ending_coroner1.png",
+"lb2compare_floppy_ending_prison.png",
+"lb2compare_floppy_ending_prison1.png",
+"lb2compare_floppy_ending_stevecu.png",
+"lb2compare_floppy_gui_inventory_act4end.png",
+"lb2compare_floppy_gui_pointercursor.png",
+"lb2compare_floppy_gui_quit.png",
+"lb2compare_floppy_intro_boatdock.png",
+"lb2compare_floppy_intro_boatdock_zoom.png",
+"lb2compare_floppy_intro_menu.png",
+"lb2compare_floppy_intro_menustart.png",
+"lb2compare_floppy_intro_sierralogo.png",
+"lb2compare_floppy_intro_tinylaura.png",
+"lb2compare_floppy_intro_trainarrive.png",
+"lb2compare_floppy_intro_trainarrive1.png",
+"lb2compare_floppy_intro_traininterior.png",
+"lb2compare_floppy_intro_traininterior1.png",
+"lb2compare_floppy_intro_tribuneext.png",
+"lb2compare_floppy_intro_tutpippin.png",
+"lb2compare_floppy_intro_watneysteve.png"
+    ];
+
+    const gallery = document.getElementById("gallery");
+
+    files.forEach(file => {
+      if (file.includes("_floppy_")) {
+        const cdFile = file.replace("_floppy_", "_cd_");
+        if (files.includes(cdFile)) {
+          // Build comparison block
+          const compare = document.createElement("div");
+          compare.className = "compare";
+
+          compare.innerHTML = `
+            <img class="compare__image-one" src="cd/${cdFile}" >
+            <div class="compare__mask">
+              <img class="compare__image-two" src="floppy/${file}">
+            </div>
+            <div class="compare__separator">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" class="compare__icon" viewBox="0 0 16 16">
+                <path d="M 6 2 L 1 8 L 6 14 M 10 2 L 15 8 L 10 14" stroke="currentColor"></path>
+              </svg>
+            </div>
+            <input class="compare__input" type="range" min="0" step="0.5" max="100" value="50">
+          `;
+
+          gallery.appendChild(compare);
+
+          const input = compare.querySelector(".compare__input");
+          input.addEventListener("input", () => {
+            compare.style.setProperty("--mask-width", `${input.value}%`);
+          });
+          compare.style.setProperty("--mask-width", `${input.value}%`);
+        }
+      }
+    });
+
+    var compare_intro = document.querySelector("#compare_intro");
+    var intro_input = compare_intro.querySelector(".compare__input");
+    intro_input.addEventListener("input", () => {
+      compare_intro.style.setProperty("--mask-width", `${intro_input.value}%`);
+    });
+    compare_intro.style.setProperty("--mask-width", `${intro_input.value}%`);
+  </script>
+</body>
+</html>
